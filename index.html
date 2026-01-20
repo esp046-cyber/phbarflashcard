@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 PH Bar Exam Reviewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 1%;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 8px 1%;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            margin-bottom: 1%;
+            border: 1px solid rgba(218, 165, 32, 0.3);
+        }
+        
+        h1 {
+            font-size: 0.95rem;
+            color: #DAA520;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .subject-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1%;
+            margin-bottom: 1%;
+        }
+        
+        .subject-btn {
+            padding: 10px 8px;
+            background: rgba(218, 165, 32, 0.15);
+            border: 1px solid rgba(218, 165, 32, 0.4);
+            border-radius: 6px;
+            color: #DAA520;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .subject-btn:hover {
+            background: rgba(218, 165, 32, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        .subject-btn.active {
+            background: #DAA520;
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+        
+        .flashcard-container {
+            perspective: 1000px;
+            margin-bottom: 1%;
+        }
+        
+        .flashcard {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+        
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            padding: 1%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+        
+        .card-front {
+            background: linear-gradient(135deg, #2d3561 0%, #1f2544 100%);
+            border: 2px solid rgba(218, 165, 32, 0.5);
+        }
+        
+        .card-back {
+            background: linear-gradient(135deg, #1f2544 0%, #2d3561 100%);
+            border: 2px solid rgba(218, 165, 32, 0.5);
+            transform: rotateY(180deg);
+        }
+        
+        .card-label {
+            font-size: 0.7rem;
+            color: #DAA520;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .card-content {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            text-align: center;
+            padding: 1%;
+            color: #e0e0e0;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1%;
+            margin-bottom: 1%;
+        }
+        
+        .control-btn {
+            padding: 12px;
+            background: rgba(218, 165, 32, 0.2);
+            border: 1px solid rgba(218, 165, 32, 0.5);
+            border-radius: 8px;
+            color: #DAA520;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .control-btn:hover {
+            background: rgba(218, 165, 32, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .progress {
+            background: rgba(0,0,0,0.3);
+            padding: 1%;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 1%;
+        }
+        
+        .progress-text {
+            font-size: 0.75rem;
+            color: #DAA520;
+            margin-bottom: 6px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(218, 165, 32, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #DAA520, #FFD700);
+            transition: width 0.3s;
+            border-radius: 4px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1%;
+        }
+        
+        .stat-box {
+            background: rgba(0,0,0,0.3);
+            padding: 1%;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid rgba(218, 165, 32, 0.3);
+        }
+        
+        .stat-value {
+            font-size: 1.2rem;
+            color: #DAA520;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            font-size: 0.65rem;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        .tap-hint {
+            text-align: center;
+            color: #999;
+            font-size: 0.7rem;
+            margin-top: 8px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 2026 Philippine Bar Exam Flashcard Reviewer</h1>
+        </header>
+        
+        <div class="subject-selector" id="subjectSelector"></div>
+        
+        <div class="progress">
+            <div class="progress-text" id="progressText">Card 1 of 10</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 10%"></div>
+            </div>
+        </div>
+        
+        <div class="flashcard-container">
+            <div class="flashcard" id="flashcard">
+                <div class="card-face card-front">
+                    <div class="card-label">QUESTION</div>
+                    <div class="card-content" id="question"></div>
+                </div>
+                <div class="card-face card-back">
+                    <div class="card-label">ANSWER</div>
+                    <div class="card-content" id="answer"></div>
+                </div>
+            </div>
+            <div class="tap-hint">Tap card to flip</div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn" onclick="previousCard()">← Previous</button>
+            <button class="control-btn" onclick="shuffleCards()">🔀 Shuffle</button>
+            <button class="control-btn" onclick="nextCard()">Next →</button>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="totalCards">10</div>
+                <div class="stat-label">Total Cards</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="currentSubject">Civil Law</div>
+                <div class="stat-label">Subject</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="cardsStudied">0</div>
+                <div class="stat-label">Studied</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const flashcards = {
+            'Civil Law': [
+                {q: 'What is the principle of Res Ipsa Loquitur?', a: 'The thing speaks for itself. A doctrine where negligence is inferred from the nature of the accident itself without direct evidence.'},
+                {q: 'Define Novation under the Civil Code.', a: 'Novation is the extinguishment of an obligation by the substitution or change of the obligation by a subsequent one which extinguishes or modifies the first.'},
+                {q: 'What are the essential elements of a contract?', a: '1) Consent of contracting parties 2) Object certain which is subject matter 3) Cause of obligation established'},
+                {q: 'What is the difference between void and voidable contracts?', a: 'Void contracts produce no effect from the beginning. Voidable contracts are valid until annulled by proper action in court.'},
+                {q: 'Define usufruct.', a: 'The right to enjoy the property of another with the obligation of preserving its form and substance, unless title constituting it or law provides otherwise.'},
+                {q: 'What is acquisitive prescription?', a: 'A mode of acquiring ownership and other real rights through lapse of time in the manner and under conditions laid down by law.'},
+                {q: 'Define legal compensation.', a: 'Extinguishment to concurrent amount of debts of persons who are reciprocally debtors and creditors of each other.'},
+                {q: 'What is the doctrine of piercing the veil of corporate fiction?', a: 'A doctrine that disregards corporate entity and holds stockholders/officers personally liable when corporation is used for fraud, wrong, or crime.'},
+                {q: 'Define donation inter vivos.', a: 'An act of liberality whereby a person disposes gratuitously of a thing or right in favor of another who accepts it during donor\'s lifetime.'},
+                {q: 'What is the Torrens System?', a: 'A land registration system that provides indefeasibility of title once registered, subject to certain exceptions provided by law.'},
+                {q: 'What are the requisites of valid marriage?', a: '1) Legal capacity of parties 2) Consent freely given 3) Authority of solemnizing officer 4) Valid marriage license (except in cases exempted by law)'},
+                {q: 'Define legal separation vs. annulment.', a: 'Legal separation does not dissolve marriage bond, only separates spouses. Annulment declares marriage void from beginning due to vices of consent or lack of essential requisites.'},
+                {q: 'What is the doctrine of imputed negligence?', a: 'Negligence of one person is charged to another based on relationship (e.g., employer-employee, parent-child in certain cases).'},
+                {q: 'Define easement or servitude.', a: 'An encumbrance imposed upon immovable property for benefit of another property belonging to different owner, or for public/community benefit.'},
+                {q: 'What is the doctrine of last clear chance?', a: 'Person who has last clear opportunity to avoid accident but fails to do so is liable, even if other party was initially negligent.'},
+                {q: 'Define capacitation vs. incapacitation.', a: 'Capacitation - giving juridical capacity. Incapacitation - removal or restriction of capacity to act (e.g., insanity, minority, civil interdiction).'},
+                {q: 'What is the principle of unjust enrichment?', a: 'No one shall enrich himself unjustly at expense of another. Basis for recovery in quasi-contracts (solutio indebiti, negotiorum gestio).'},
+                {q: 'Define legitimate vs. illegitimate children rights.', a: 'Legitimate children have full rights to support, inheritance, use of surname. Illegitimate children entitled to support and succession but receive half of legitimate share.'},
+                {q: 'What is the Regalian Doctrine?', a: 'All lands of public domain and natural resources belong to the State. Private ownership must be traced to valid grant from State.'},
+                {q: 'Define reciprocity of contracts.', a: 'In reciprocal obligations, neither party incurs delay if other does not comply or is not ready to comply. Basis for rescission under Article 1191.'},
+                {q: 'What is the principle of relativity of contracts?', a: 'Contracts bind only parties, assigns, and heirs except when rights and obligations are not transmissible. Third persons not bound (Art. 1311).'},
+                {q: 'Define condonation vs. remission.', a: 'Both are modes of extinguishing obligations. Condonation is gratuitous renunciation of credit; remission is general term for any relinquishment of right.'},
+                {q: 'What is subrogation?', a: 'Transmission of rights of creditor to third person who pays. May be conventional (by agreement) or legal (by operation of law).'},
+                {q: 'Define mortgage vs. pledge.', a: 'Mortgage - security on immovable property or real rights, property remains with debtor. Pledge - security on movable property, delivered to creditor or third person.'},
+                {q: 'What is potestative, casual, and mixed condition?', a: 'Potestative - depends on will of obligor/obligee. Casual - depends on chance/will of third person. Mixed - depends on will of one party and chance/will of another.'},
+                {q: 'Define obligation with a period vs. conditional obligation.', a: 'Period - obligation whose fulfillment/extinguishment subject to expiration of term. Conditional - obligation whose efficacy/extinguishment subject to happening of future uncertain event.'},
+                {q: 'What is the principle of good faith in contracts?', a: 'Contracts must be performed in good faith. Parties must act with honesty, fairness, and reasonableness in performance and enforcement.'},
+                {q: 'Define natural vs. civil fruits.', a: 'Natural fruits - spontaneous products of soil, offspring of animals. Civil fruits - rents, interests, pensions. Industrial fruits - produced by cultivation/labor.'},
+                {q: 'What is the distinction between possession and ownership?', a: 'Ownership - right to enjoy and dispose property within law. Possession - holding or enjoying thing with/without right. May possess without owning and vice versa.'},
+                {q: 'Define accession as mode of acquisition.', a: 'Right of owner to everything which is produced/incorporated/attached to property, either naturally or artificially (Art. 440).'},
+                {q: 'What are the characteristics of real rights?', a: 'Real rights: 1) Enforceable against whole world (erga omnes) 2) Create direct relationship between person and thing 3) Fixed number created only by law'},
+                {q: 'Define rescissible vs. voidable contracts.', a: 'Rescissible - valid but cause economic damage to one party/creditors. Voidable - valid until annulled due to vice of consent or lack of capacity.'},
+                {q: 'What is the doctrine of laches?', a: 'Failure/neglect for unreasonable length of time to do what should have been done. Differs from prescription in that laches is equitable while prescription is statutory.'},
+                {q: 'Define solidary vs. joint obligations.', a: 'Solidary - each debtor liable for entire obligation, each creditor may demand entire debt. Joint - each debtor liable only for proportionate share.'},
+                {q: 'What is the principle of autonomy of will?', a: 'Parties free to stipulate terms/conditions provided not contrary to law, morals, public order, or public policy (Art. 1306).'},
+                {q: 'Define facultative vs. alternative obligations.', a: 'Alternative - debtor must render one of several prestations. Facultative - only one prestation due but debtor may substitute another.'},
+                {q: 'What is extinction of prescription?', a: 'Prescription extinguished by: renunciation (after right accrued), interruption (filing action/written extrajudicial demand), suspension (special circumstances).'},
+                {q: 'Define hereditary succession.', a: 'Mode of acquisition by which property, rights, and obligations to extent of value of inheritance are transmitted through death. May be testamentary or intestate.'},
+                {q: 'What is collation?', a: 'Process of adding value of donations made to compulsory heirs to hereditary estate to determine legitime. Ensures equality among compulsory heirs.'},
+                {q: 'Define preterition.', a: 'Omission of compulsory heir in direct line from will. Results in annulment of institution of heirs but legacies/devises remain valid.'}
+            ],
+            'Criminal Law': [
+                {q: 'What are the elements of Estafa under Art. 315 RPC?', a: '1) Deceit or abuse of confidence 2) Damage or prejudice capable of pecuniary estimation caused to offended party 3) Damage due to deceit/abuse'},
+                {q: 'Define Dolo and Culpa.', a: 'Dolo (deceit/malice) - deliberate intent. Culpa (fault/negligence) - freedom from malice but failure to exercise due care.'},
+                {q: 'What is Conspiracy?', a: 'When two or more persons come to an agreement concerning commission of felony and decide to commit it. Acts of conspirators are acts of all.'},
+                {q: 'Define Frustrated Felony.', a: 'When offender performs all acts of execution which would produce felony but which do not produce it by reason of causes independent of perpetrator\'s will.'},
+                {q: 'What is the Indeterminate Sentence Law?', a: 'Law requiring courts to impose indeterminate sentence with minimum and maximum periods, promoting rehabilitation and preventing excessive punishment.'},
+                {q: 'Define Treachery (Alevosia).', a: 'Employment of means, methods, or forms giving person attacked no opportunity to defend himself or retaliate, ensuring execution without risk to attacker.'},
+                {q: 'What is Evident Premeditation?', a: 'Aggravating circumstance where offender has determined to commit crime and clung to determination with sufficient time for reflection.'},
+                {q: 'Define Robbery vs. Theft.', a: 'Robbery - taking with intent to gain, personal property of another, with violence/intimidation or force upon things. Theft - without violence/intimidation.'},
+                {q: 'What is the Equipoise Rule?', a: 'Where evidence is evenly balanced or there is doubt on which side to weigh, decision must favor accused based on presumption of innocence.'},
+                {q: 'Define Self-Defense requirements.', a: '1) Unlawful aggression 2) Reasonable necessity of means employed 3) Lack of sufficient provocation on part of person defending himself'},
+                {q: 'What are the stages of crime execution?', a: 'Internal acts (not punishable), External acts: 1) Preparatory (generally not punishable) 2) Execution proper (attempt, frustrated, consummated)'},
+                {q: 'Define impossible crime.', a: 'Acts performed would be offense against persons/property but inherently impossible or means employed inadequate/ineffectual (Art. 4, par. 2).'},
+                {q: 'What is aberratio ictus vs. error in personae?', a: 'Aberratio ictus - mistake in blow, hitting different person. Error in personae - mistake in identity. Both do not affect criminal liability.'},
+                {q: 'Define praeter intentionem.', a: 'When injury caused is greater than intended. Mitigating circumstance where offender had no intention to commit so grave a wrong (Art. 13, par. 3).'},
+                {q: 'What is the principle of pro reo?', a: 'All doubts resolved in favor of accused. Stems from presumption of innocence and constitutional requirement of proof beyond reasonable doubt.'},
+                {q: 'Define recidivism vs. reiteracion.', a: 'Recidivism - committed new felony after having been convicted by final judgment of prior crime embraced in same title of RPC. Reiteracion - prior offenses need not be in same title.'},
+                {q: 'What is the two-fold rule?', a: 'When single act constitutes two or more offenses, penalty for most serious crime imposed in maximum period (Art. 48 complex crime).'},
+                {q: 'Define continuing crime vs. transitory crime.', a: 'Continuing crime - single crime consisting of series of acts arising from one criminal resolution (special complex). Transitory - committed in different places, venue in any.'},
+                {q: 'What is the Dangerous Drugs Act (RA 9165) penalty?', a: 'Life imprisonment to death and fine P500K-P10M for unauthorized importation, sale, delivery of dangerous drugs depending on quantity.'},
+                {q: 'Define mitigating vs. aggravating circumstances.', a: 'Mitigating - reduce penalty (voluntary surrender, passion/obfuscation, incomplete justifying). Aggravating - increase penalty (dwelling, nighttime, band, recidivism).'},
+                {q: 'What is the Anti-Hazing Act (RA 8049)?', a: 'Punishes hazing causing death, physical injuries. Officers/members present during hazing liable. School officials negligent in enforcing rules also liable.'},
+                {q: 'Define complex crime proper vs. compound crime.', a: 'Complex crime proper - single act constitutes 2+ grave/less grave felonies. Compound crime - offense necessary means for committing another (Art. 48).'},
+                {q: 'What is the principle of mala in se vs. mala prohibita?', a: 'Mala in se - wrong by nature, requires criminal intent (RPC crimes). Mala prohibita - wrong because prohibited, intent immaterial (special penal laws).'},
+                {q: 'Define privileged vs. ordinary mitigating.', a: 'Privileged mitigating - lowers penalty by one/two degrees (incomplete justifying, minority). Ordinary mitigating - considered in imposing penalty within proper period.'},
+                {q: 'What is the Anti-Graft and Corrupt Practices Act (RA 3019)?', a: 'Penalizes corrupt practices of public officers: causing undue injury through manifest partiality, bad faith; giving unwarranted benefits; receiving gifts.'},
+                {q: 'Define flight as evidence of guilt.', a: 'Flight of accused after commission of crime is circumstantial evidence of guilt. Shows consciousness of guilt and fear of punishment.'},
+                {q: 'What is the principle of res inter alios acta?', a: 'Things done between strangers not admissible. Conspirator\'s acts/declarations during conspiracy admissible against all, but not after its accomplishment.'},
+                {q: 'Define the benefit of the Probation Law (RA 10707).', a: 'Suspension of sentence, placing offender under supervision instead of imprisonment. Not available to: sentenced to >6 years, previously convicted, those on probation before.'},
+                {q: 'What is carnapping (RA 6539)?', a: 'Taking of motor vehicle belonging to another without consent, with intent to gain. Penalty higher if owner/driver killed/raped or vehicle operated by syndicate.'},
+                {q: 'Define the felony of Direct Assault.', a: 'Attacking, employing force/intimidation, seriously resisting person in authority/agent while engaged in performance of official duties (Art. 148).'},
+                {q: 'What is Rebellion vs. Coup d\'etat?', a: 'Rebellion - rising publicly/taking arms against government. Coup d\'etat - swift attack by armed persons belonging to military against government facilities (RA 6968).'},
+                {q: 'Define the concept of criminal liability extinction.', a: 'Extinguished by: death of convict (personal penalties), service of sentence, amnesty, absolute pardon, prescription, marriage (in seduction/abduction/rape cases).'},
+                {q: 'What is the Anti-Fencing Law (PD 1612)?', a: 'Fencing - act of buying, receiving, possessing, keeping, selling property taken by robbery/theft knowing it was derived therefrom. Mere possession creates presumption.'},
+                {q: 'Define the defenses of insanity and imbecility.', a: 'Insanity - complete deprivation of intelligence, exempt from liability. Imbecility - advanced age mental development, mitigating. Burden of proof on accused.'},
+                {q: 'What is the principle of ei incumbit probatio?', a: 'Burden of proof on prosecution to establish guilt beyond reasonable doubt. Accused need not prove innocence but may present evidence to create reasonable doubt.'},
+                {q: 'Define the felony of Malversation (Art. 217).', a: 'Appropriation/consent to another person to take public funds/property which accountable officer has custody due to office. Presumed if fails to account upon demand.'},
+                {q: 'What is the Cybercrime Prevention Act (RA 10175)?', a: 'Punishes cyber offenses: illegal access, data interference, system interference, cyber libel, child pornography, cyber fraud. Computer-related crimes have higher penalties.'},
+                {q: 'Define the rule on subsidiary imprisonment.', a: 'When convict has no property to pay fine, subsidiary imprisonment imposed. Not exceeding 1/3 of principal penalty or 6 months if destierro. Not applicable to certain penalties.'},
+                {q: 'What is the Anti-Carnapping Act penalty scheme?', a: 'Penalties range from 14-20 years for carnapping. Life imprisonment if owner/driver killed. Death penalty (now life imprisonment) if raped or carnapping by syndicate.'}
+            ],
+            'Remedial Law': [
+                {q: 'What is the Doctrine of Hierarchy of Courts?', a: 'Direct recourse to Supreme Court is improper when relief is available from lower courts. Proper procedure must be observed.'},
+                {q: 'Define Litis Pendentia.', a: 'Ground for dismissal where another action pending between same parties for same cause. Requisites: identity of parties, rights, and reliefs.'},
+                {q: 'What is Res Judicata?', a: 'Rule that final judgment on merits by court of competent jurisdiction is conclusive between parties and their successors in all later suits.'},
+                {q: 'Define Venue vs. Jurisdiction.', a: 'Jurisdiction - authority to hear/decide cases. Venue - place where suit may be had. Venue is procedural; jurisdiction is substantive.'},
+                {q: 'What is the Rule on Forum Shopping?', a: 'Filing multiple suits involving same parties, rights, and reliefs in different courts. Constitutes direct contempt and cause for dismissal.'},
+                {q: 'Define Preponderance of Evidence.', a: 'Evidence which is more convincing to court as worthier of belief than that offered in opposition. Standard in civil cases.'},
+                {q: 'What is the Parol Evidence Rule?', a: 'When terms of agreement reduced to writing, it is best evidence of terms. Oral evidence cannot vary written terms except in specified cases.'},
+                {q: 'Define Provisional Remedies.', a: 'Remedies availed of during pendency of action as incidents thereof: attachment, preliminary injunction, receivership, replevin, support pendente lite.'},
+                {q: 'What is Summary Judgment?', a: 'Judgment rendered when pleadings, depositions, admissions show no genuine issue as to material fact and moving party entitled to judgment as matter of law.'},
+                {q: 'Define Appeal vs. Certiorari.', a: 'Appeal - reviews errors of judgment. Certiorari - reviews errors of jurisdiction/grave abuse of discretion. Different remedies with different requisites.'},
+                {q: 'What is the Rule on Omnibus Motion?', a: 'All objections/defenses available at time must be raised in one motion. Exceptions allowed only for lack of jurisdiction, litis pendentia, res judicata, prescription.'},
+                {q: 'Define Demurrer to Evidence.', a: 'Motion to dismiss after prosecution/plaintiff rests case on ground that evidence insufficient. Waives right to present evidence if denied.'},
+                {q: 'What is the doctrine of immutability of judgments?', a: 'Final judgment becomes immutable and unalterable. May not be modified even if modification for correction of erroneous conclusions. Exceptions: clerical errors, nunc pro tunc, void judgments.'},
+                {q: 'Define in personam vs. in rem jurisdiction.', a: 'In personam - jurisdiction over person, based on service of summons. In rem - jurisdiction over thing/status, applicable to all claiming interest.'},
+                {q: 'What is the Fresh Period Rule?', a: 'If motion for reconsideration denied, aggrieved party may file appeal within fresh 15-day period from notice of denial (SC Administrative Matter 07-7-12-SC).'},
+                {q: 'Define the Best Evidence Rule.', a: 'When subject of inquiry is contents of document, no evidence admissible other than original itself except: secondary evidence when original lost/destroyed, in custody of adverse party, public record.'},
+                {q: 'What is the rule on Substituted Service?', a: 'When personal service cannot be made, summons served by leaving copies at defendant\'s residence with person of suitable age/discretion, or at office with competent person.'},
+                {q: 'Define Provisional Dismissal vs. Dismissal with Prejudice.', a: 'Provisional dismissal - without prejudice, case may be refiled within prescribed period. With prejudice - operates as adjudication on merits, bars refiling (res judicata).'},
+                {q: 'What is the principle of liberality in procedural rules?', a: 'Rules of procedure should be liberally construed to promote their objective: securing just, speedy, inexpensive disposition. Technicalities should not defeat substantial justice.'},
+                {q: 'Define Motion for Reconsideration vs. Motion for New Trial.', a: 'MR - based on errors of law/fact in judgment. New Trial - based on FAME (fraud, accident, mistake, excusable negligence) or newly discovered evidence. Different grounds and effects.'},
+                {q: 'What is the doctrine of primary jurisdiction?', a: 'Courts cannot resolve controversy involving question within jurisdiction of administrative tribunal until agency has resolved it. Prevents premature interference with agency processes.'},
+                {q: 'Define the rule on Prescription of Actions.', a: 'Written contracts - 10 years. Oral contracts - 6 years. Quasi-delict/quasi-contract - 6 years. Injury to rights (based on law) - 4 years. Counted from accrual of cause.'},
+                {q: 'What is Judgment on the Pleadings?', a: 'Rendered when answer fails to tender issue or admits material allegations of complaint. Proper when no genuine issue exists and moving party entitled to judgment.'},
+                {q: 'Define the doctrine of judicial stability.', a: 'Court that first takes cognizance has jurisdiction to exclusion of all other coordinate courts. Exception: where court cannot act effectively or higher court takes cognizance.'},
+                {q: 'What is the Rule on Service of Judgments?', a: 'Final orders/judgments served personally/by registered mail. Period to appeal/file MR counted from receipt of notice. Personal service preferred; registry return prima facie proof.'},
+                {q: 'Define Subpoena Duces Tecum vs. Subpoena Ad Testificandum.', a: 'Duces tecum - commands person to bring specified documents/things. Ad testificandum - commands person to appear and testify. Both issued by court/officer.'},
+                {q: 'What is the principle of estoppel by laches?', a: 'Failure to assert right for unreasonable time, causing prejudice to adverse party. Based on equity; party cannot assert right delayed unreasonably in asserting.'},
+                {q: 'Define the rule on Amendment of Pleadings.', a: 'Before responsive pleading - matter of right. After responsive pleading - leave of court required. Substantial amendments not allowed during/after trial except for conformity to evidence.'},
+                {q: 'What is the Continuous Trial System (Rule 30)?', a: 'Trial dates fixed at pre-trial, trial conducted continuously until terminated. No postponements except for highly meritorious grounds. Promotes speedy disposition.'},
+                {q: 'Define the doctrine of judicial notice.', a: 'Court takes cognizance of certain facts without proof: matters of common/public knowledge, laws of Philippines, official acts of departments. Mandatory or discretionary.'},
+                {q: 'What is the Rule on Intervention?', a: 'Person with legal interest in matter in litigation may intervene by leave of court. May be allowed anytime before rendition of judgment. Interest must be direct and immediate.'},
+                {q: 'Define Motion to Dismiss vs. Affirmative Defenses.', a: 'MTD filed before responsive pleading, attacks pleading itself. Affirmative defenses alleged in answer, admit allegations but assert new matter avoiding their effect.'},
+                {q: 'What is the principle of finality of judgment?', a: 'Judgment becomes final after lapse of appeal period without appeal, or appeal finally resolved. Executory and can be enforced. Exceptions: void judgments, extrinsic fraud.'},
+                {q: 'Define the Rule on Execution of Judgments.', a: 'Execution as matter of right upon finality. Discretionary during appeal if good reasons exist. May be satisfied by garnishment, levy, sale of property of judgment obligor.'},
+                {q: 'What is the doctrine of exhaustion of administrative remedies?', a: 'Before resort to courts, administrative remedies must first be exhausted. Allows agency to perform functions, apply expertise, correct errors. Exceptions: purely legal questions, estoppel.'},
+                {q: 'Define Quieting of Title vs. Accion Reivindicatoria.', a: 'Quieting of title - removes cloud on title, plaintiff in possession. Accion reivindicatoria - recovery of ownership and possession, plaintiff out of possession.'},
+                {q: 'What is the Rule on Revival of Judgment?', a: 'Judgment not enforced within 5 years becomes dormant. May be revived before prescription (10 years from finality) by motion in same case or separate action.'},
+                {q: 'Define Guardian Ad Litem.', a: 'Person appointed to represent minors/incompetents in judicial proceedings. Protects interests of those legally incapable. Appointment necessary for valid proceedings.'},
+                {q: 'What is Small Claims Procedure?', a: 'Summary procedure for claims not exceeding P400,000 (adjusted). No lawyers, no formal pleadings. Decided within 1 day of hearing. Judgment immediately final and executory.'}
+            ],
+            'Political Law': [
+                {q: 'What is the Doctrine of Separation of Powers?', a: 'Distribution of powers among three branches (Executive, Legislative, Judicial) with checks and balances to prevent concentration of authority.'},
+                {q: 'Define Judicial Review.', a: 'Power of courts to test validity of executive and legislative acts for conformity with Constitution. Courts as final arbiters of constitutionality.'},
+                {q: 'What is the Bill of Rights?', a: 'Articles III provisions guaranteeing fundamental liberties against government intrusion. Protects individual rights and civil liberties.'},
+                {q: 'Define Police Power, Eminent Domain, Taxation.', a: 'Inherent powers of State. Police Power - regulate for public welfare. Eminent Domain - take private property for public use. Taxation - raise revenue.'},
+                {q: 'What is the Doctrine of Constitutional Supremacy?', a: 'Constitution is supreme law. All laws, executive acts, judicial decisions must conform. Inconsistent laws are void and of no effect.'},
+                {q: 'Define Equal Protection Clause.', a: 'All persons similarly situated should be treated alike in rights and responsibilities. Requires substantial distinction and valid classification.'},
+                {q: 'What is Due Process of Law?', a: 'Substantive - law must be reasonable, not arbitrary. Procedural - notice and opportunity to be heard before deprivation of life, liberty, property.'},
+                {q: 'Define Grave Abuse of Discretion.', a: 'Exercise of judgment in capricious, whimsical, arbitrary manner equivalent to lack of jurisdiction. Correctible by certiorari.'},
+                {q: 'What is the One-Subject-One-Title Rule?', a: 'Every bill shall embrace only one subject expressed in title. Prevents "rider legislation" and ensures legislators/public aware of bill contents.'},
+                {q: 'Define Impeachment grounds.', a: 'President, VP, Supreme Court Justices, Ombudsman, Constitutional Commissions may be impeached for: culpable violation, treason, bribery, other high crimes, betrayal of public trust.'}
+            ],
+            'Taxation': [
+                {q: 'What are the principles of sound taxation?', a: 'Fiscal Adequacy (sufficient revenue), Theoretical Justice (ability to pay), Administrative Feasibility (capable of enforcement).'},
+                {q: 'Define Situs of Taxation.', a: 'Place of taxation. General rule: State where subject (person, property, business) is located has right to impose tax.'},
+                {q: 'What is Double Taxation?', a: 'Taxing same person/property twice by same jurisdiction for same purpose in same taxable period. Generally not prohibited unless constitutionally/statutorily forbidden.'},
+                {q: 'Define Tax Exemption.', a: 'Grant of immunity from tax liability. Exemptions strictly construed against taxpayer. Burden of proof on claimant.'},
+                {q: 'What is the Doctrine of Condonation?', a: 'Re-election of local official condones prior administrative misconduct. Note: This doctrine has been abandoned by Supreme Court in recent rulings.'},
+                {q: 'Define Value Added Tax (VAT).', a: 'Tax on consumption imposed on sale, barter, exchange of goods/properties, sale/exchange of services, importation. Currently 12%.'},
+                {q: 'What is Compromise in taxation?', a: 'Agreement between taxpayer and government settling tax liability. Valid when taxpayer\'s financial position makes collection doubtful/final assessment difficult.'},
+                {q: 'Define Withholding Tax System.', a: 'Method of collecting income tax at source. Employer/payor withholds tax from income payments and remits to BIR.'},
+                {q: 'What is the Doctrine of Imprescriptibility?', a: 'Generally, right of State to collect taxes does not prescribe. However, NIRC provides specific prescription periods for assessment and collection.'},
+                {q: 'Define Tax Amnesty vs. Tax Exemption.', a: 'Tax Amnesty - immunity from civil, criminal, administrative penalties (not tax itself). Tax Exemption - freedom from tax obligation itself.'}
+            ],
+            'Labor Law': [
+                {q: 'What is Security of Tenure?', a: 'Employee can only be dismissed for just or authorized cause and after due process. Protection against arbitrary dismissal.'},
+                {q: 'Define Just vs. Authorized Causes.', a: 'Just Causes - employee fault (serious misconduct, willful disobedience, gross neglect, fraud, crime). Authorized - employer prerogative (redundancy, retrenchment, closure).'},
+                {q: 'What is the Two-Notice Rule?', a: 'For just causes: 1st notice states charges, 2nd notice states decision after hearing. For authorized causes: 30-day notice to employee and DOLE.'},
+                {q: 'Define Four-Fold Test of Employment.', a: 'Tests employer-employee relationship: 1) Selection/engagement 2) Payment of wages 3) Power of dismissal 4) Power to control (most important).'},
+                {q: 'What is Illegal Dismissal?', a: 'Termination without just/authorized cause or without due process. Remedies: reinstatement without loss of seniority rights, backwages.'},
+                {q: 'Define Regular vs. Casual Employment.', a: 'Regular - activities necessary/desirable to business, performed for over 6 months. Casual - not regular employment, employment for specific project/season.'},
+                {q: 'What is the Doctrine of Strained Relations?', a: 'Where reinstatement not feasible due to strained relations, separation pay awarded instead. Not applicable when employee at fault.'},
+                {q: 'Define Money Claims Prescription.', a: 'Money claims (unpaid wages, benefits) prescribe in 3 years from time cause of action accrued. Interruption tolls prescription.'},
+                {q: 'What is Constructive Dismissal?', a: 'Voluntary resignation due to employer acts making continued employment impossible/unreasonable. Amounts to illegal dismissal.'},
+                {q: 'Define Gross Negligence vs. Simple Negligence.', a: 'Gross Negligence - want of care in performance, just cause for dismissal. Simple Negligence - lack of ordinary care, not ground for termination.'}
+            ],
+            'Mercantile Law': [
+                {q: 'What is a negotiable instrument?', a: 'Written contract for payment of money which by form and on face is intended as substitute for money, passes by delivery with necessary indorsement.'},
+                {q: 'Define holder in due course.', a: 'One who took instrument: 1) Complete and regular on face 2) Before overdue 3) In good faith and for value 4) Without notice of defect.'},
+                {q: 'What is ultra vires doctrine?', a: 'Acts beyond corporate powers are invalid. Corporation can only exercise powers granted by law and articles of incorporation.'},
+                {q: 'Define limited vs. general partnership.', a: 'General Partnership - all partners liable pro rata, unlimited liability. Limited Partnership - has limited partners liable only to extent of contribution.'},
+                {q: 'What is the trust fund doctrine?', a: 'Capital stock, property, assets of corporation held in trust for creditors. No distribution to stockholders prejudicing creditors.'},
+                {q: 'Define FOB vs. CIF contracts.', a: 'FOB (Free on Board) - seller delivers when goods pass ship rail at named port. CIF (Cost, Insurance, Freight) - seller pays freight to destination.'},
+                {q: 'What is a bill of lading?', a: 'Document issued by carrier acknowledging receipt of goods for shipment. Serves as: receipt, contract of carriage, document of title.'},
+                {q: 'Define common carrier liability.', a: 'Presumed negligent if goods lost/damaged. Must exercise extraordinary diligence. Liable even for acts of strangers except force majeure.'},
+                {q: 'What is insurable interest?', a: 'Interest which person sought to be insured has in subject matter requiring him to be benefited by preservation or prejudiced by loss thereof.'},
+                {q: 'Define representation vs. warranty in insurance.', a: 'Representation - statement inducing contract, need not be included. Warranty - part of contract, must be strictly complied with.'}
+            ],
+            'Legal Ethics': [
+                {q: 'What is the lawyer-client privilege?', a: 'Attorney cannot be examined without client consent as to communications made by client in professional capacity. Privilege belongs to client.'},
+                {q: 'Define conflict of interest.', a: 'Representation of opposing parties in same case or cases of such nature that success of one adversely affects the other. Prohibited.'},
+                {q: 'What is quantum meruit in legal fees?', a: 'As much as deserved. When no written agreement, lawyer entitled to reasonable compensation based on services rendered.'},
+                {q: 'Define champerty and maintenance.', a: 'Champerty - agreement to divide litigation proceeds. Maintenance - officious intermeddling in suit not belonging to party. Both prohibited.'},
+                {q: 'What is Canon of Professional Responsibility?', a: 'Code governing lawyer conduct. Mandatory rules and aspirational standards ensuring competent, ethical representation.'},
+                {q: 'Define solicitation of clients.', a: 'Prohibited act of lawyer volunteering counsel/advice or seeking employment through agents/runners. Violates professional ethics.'},
+                {q: 'What is the duty of candor to court?', a: 'Lawyer must not mislead court by artifice/false statement. Must disclose adverse authority in controlling jurisdiction.'},
+                {q: 'Define negligence vs. misconduct.', a: 'Negligence - lack of ordinary care/skill. Misconduct - wrongful, improper, unlawful conduct motivated by premeditated, obstinate, intentional purpose.'},
+                {q: 'What is the MCLE requirement?', a: 'Mandatory Continuing Legal Education. Lawyers must complete required credit hours of continuing legal education for license renewal.'},
+                {q: 'Define barratry.', a: 'Habitual stirring up of quarrels and suits. Also includes lawyer procuring clients through fraudulent means or stirring up litigation.'}
+            ],
+            'Constitutional Law': [
+                {q: 'What are the three inherent powers of the State?', a: 'Police Power (regulate liberty/property for public welfare), Eminent Domain (take private property for public use with just compensation), Taxation (levy for revenue).'},
+                {q: 'Define the doctrine of constitutional supremacy.', a: 'Constitution is supreme law of land. All laws, executive acts, judicial decisions must conform. Any law/act inconsistent with Constitution is void.'},
+                {q: 'What is the Bill of Rights?', a: 'Article III of 1987 Constitution. Guarantees fundamental civil and political rights against governmental abuse: due process, equal protection, free speech, etc.'},
+                {q: 'Define judicial review.', a: 'Power of courts to declare law, treaty, executive order, presidential decree unconstitutional. Courts are final arbiters on questions of constitutionality.'},
+                {q: 'What is the political question doctrine?', a: 'Courts will not decide questions whose resolution is committed by Constitution to another branch. Involves policy decisions beyond judicial competence.'},
+                {q: 'Define separation of powers.', a: 'Distribution of governmental powers among three co-equal branches: Executive, Legislative, Judicial. System of checks and balances prevents tyranny.'},
+                {q: 'What is the doctrine of incorporation?', a: 'Generally accepted principles of international law are part of law of land. Automatically incorporated without need for legislative action.'},
+                {q: 'Define substantive vs. procedural due process.', a: 'Substantive - law must be reasonable, not arbitrary. Procedural - notice and opportunity to be heard before deprivation of life, liberty, property.'},
+                {q: 'What is equal protection clause?', a: 'No person shall be denied equal protection of laws. Requires: valid classification, substantial distinction, germane to purpose, applies equally to all members.'},
+                {q: 'Define non-impairment of contracts.', a: 'No law impairing obligation of contracts shall be passed. Not absolute - police power can impair for public welfare. Applies only to laws, not judgments.'},
+                {q: 'What is the writ of habeas corpus?', a: 'Remedy for unlawful restraint. Commands person detaining another to produce body and justify detention. May be suspended in invasion/rebellion when public safety requires.'},
+                {q: 'Define freedom of expression limits.', a: 'Not absolute. Subject to: clear and present danger rule, balancing of interests test, dangerous tendency rule. May be regulated for compelling state interest.'},
+                {q: 'What is the establishment clause?', a: 'No law shall be made respecting establishment of religion. Government must maintain neutrality - neither favoring nor inhibiting religion (separation of church and state).'},
+                {q: 'Define right against self-incrimination.', a: 'No person shall be compelled to be witness against himself. Applies to testimonial compulsion, not physical/documentary evidence. Waivable.'},
+                {q: 'What is the doctrine of operative fact?', a: 'Law declared unconstitutional is void from beginning, but law deemed operative until declared void. Effects prior to declaration remain valid for equity.'},
+                {q: 'Define delegation of legislative power.', a: 'Generally not allowed (non-delegable power). Exceptions: local governments, administrative bodies (with sufficient standard), people (initiative/referendum), President (emergency/tariff).'},
+                {q: 'What is presidential immunity?', a: 'President immune from suit during tenure for official acts. Personal/unofficial acts may be subject to suit. Immunity from suit, not from liability.'},
+                {q: 'Define impeachment process.', a: 'House initiates (1/3 vote), Senate tries (2/3 vote convicts). Grounds: culpable violation of Constitution, treason, bribery, other high crimes, betrayal of public trust.'},
+                {q: 'What is legislative inquiry in aid of legislation?', a: 'Power to conduct investigations to obtain information for legislation. May compel attendance, punish contempt. Must be in aid of legislation, not for other purposes.'},
+                {q: 'Define executive privilege.', a: 'Power of President to withhold information from Congress, courts, public. Applies to presidential communications, military/diplomatic secrets. Presumptive, not absolute.'},
+                {q: 'What is the enrolled bill doctrine?', a: 'When bill passed by Congress and approved by President, courts cannot inquire into regularity of legislative process. Enrolled bill is conclusive.'},
+                {q: 'Define Commission on Audit powers.', a: 'Constitutional body with exclusive authority to audit government accounts. Decisions final except Supreme Court review. Enjoys fiscal autonomy.'},
+                {q: 'What is local autonomy?', a: 'LGUs have right to self-governance in local affairs. Power devolved, not delegated. National government cannot interfere except as provided by law.'},
+                {q: 'Define automatic appropriation.', a: 'Certain expenditures automatically appropriated without need for annual law: debt service, Judiciary, Constitutional Commissions, ARMM, LGU shares.'},
+                {q: 'What is the rule of constitutional construction?', a: 'Constitution liberally construed to effect its purposes. Provisions read together as harmonious whole. In doubt, interpretation favoring individual rights preferred.'},
+                {q: 'Define declaration of martial law limits.', a: 'President may declare for 60 days in invasion/rebellion when public safety requires. Subject to Congress review, Supreme Court review. Civilian courts remain open.'},
+                {q: 'What is the ombudsman\'s mandate?', a: 'Investigate/prosecute public officials for graft. Has preventive suspension power. Enjoys independence, can investigate motu proprio. Subject to Supreme Court review.'},
+                {q: 'Define justiciable vs. political question.', a: 'Justiciable - legal question, court determines rights. Political - involves policy, discretion of political departments. Courts decide only justiciable controversies.'},
+                {q: 'What is citizenship by jus sanguinis?', a: 'By blood. Children of Filipino mother/father are Filipino citizens regardless of birthplace. Constitutional provision on citizenship self-executing.'},
+                {q: 'Define facial challenge to law.', a: 'Challenge to law on its face without showing actual harm. Limited to free speech cases. Regular challenge requires actual case/controversy, standing.'}
+            ],
+            'Special Laws': [
+                {q: 'What is RA 9262 (Anti-VAWC)?', a: 'Violence Against Women and Children. Protects women/children from physical, sexual, psychological, economic abuse. Includes battery, threats, stalking, economic deprivation by intimate partner.'},
+                {q: 'Define RA 7610 (Child Abuse Law).', a: 'Special Protection of Children Against Abuse. Penalizes child abuse, exploitation, discrimination. Covers physical/psychological maltreatment, child labor, trafficking.'},
+                {q: 'What is RA 9165 penalties for drug trafficking?', a: 'Life imprisonment to death, fine P500K-P10M depending on quantity. Sale of dangerous drugs regardless of quantity heavily penalized. Planting evidence also penalized.'},
+                {q: 'Define RA 10175 (Cybercrime Law).', a: 'Penalizes offenses against confidentiality, integrity, availability of computer data/systems. Cyber libel, child pornography, fraud, identity theft. Penalties one degree higher.'},
+                {q: 'What is RA 11313 (Safe Spaces Act)?', a: 'Defines gender-based sexual harassment in streets, public spaces, online, workplace, educational institutions. Provides protection, penalties for various forms of harassment.'},
+                {q: 'Define RA 10627 (Anti-Bullying Act).', a: 'Requires schools to adopt policies preventing/addressing bullying. Schools must have mechanisms to protect students, investigate incidents, impose sanctions. Covers cyber-bullying.'},
+                {q: 'What is RA 8353 (Anti-Rape Law)?', a: 'Reclassified rape from crime against chastity to crime against persons. Expanded definition: sexual assault by insertion of object/instrument. Removed requirement of physical resistance.'},
+                {q: 'Define RA 9344 (Juvenile Justice Law).', a: 'Establishes comprehensive juvenile justice system. Children 15 below exempt from criminal liability. 15-18 exempt unless acted with discernment. Diversion programs prioritized.'},
+                {q: 'What is RA 10591 (Firearms Law)?', a: 'Comprehensive law on civilian firearms. Requires license, registration. Penalizes illegal possession, manufacture, trafficking. Stricter penalties for use in crime.'},
+                {q: 'Define RA 9208 (Anti-Trafficking)?', a: 'Trafficking in persons - recruitment, transportation, transfer, harboring for exploitation. Covers sex trafficking, forced labor, organ removal. Severe penalties, asset forfeiture.'},
+                {q: 'What is RA 8042 (Migrant Workers Act)?', a: 'Protects rights of OFWs. Regulates recruitment, placement. POEA licensed required for recruiters. Solidary liability of agency and foreign principal for claims.'},
+                {q: 'Define RA 6713 (Code of Conduct)?', a: 'Public officers must uphold public interest, professionalism, justness, sincerity. Required to file SALN, prohibited from private practice conflicting with duties.'},
+                {q: 'What is RA 3019 Section 3(e)?', a: 'Most invoked provision. Public officer causing undue injury/giving unwarranted benefits through manifest partiality, evident bad faith, gross inexcusable negligence.'},
+                {q: 'Define RA 11479 (Anti-Terrorism Act).', a: 'Defines terrorism as acts intended to cause death, serious harm to intimidate, create atmosphere of fear. Allows detention up to 24 days. Controversial surveillance provisions.'},
+                {q: 'What is RA 10173 (Data Privacy Act)?', a: 'Protects personal data in government/private sectors. Requires consent for processing, security measures. Creates National Privacy Commission. Penalties for violations.'},
+                {q: 'Define RA 9775 (Anti-Child Pornography)?', a: 'Penalizes production, distribution, possession of child pornography. Hiring, child as pornography subject. Online sexual abuse covered. Severe penalties including life imprisonment.'},
+                {q: 'What is RA 10121 (Disaster Risk Management)?', a: 'Creates National Disaster Risk Reduction and Management Council. Mandates local DRRMCs. Provides framework for disaster preparedness, response, recovery, mitigation.'},
+                {q: 'Define RA 9262 protection orders.', a: 'BPO (immediate), TPO (after hearing), PPO (after trial). Court may grant residence exclusion, child custody, support, counseling. Violation penalized.'},
+                {q: 'What is PD 1529 (Property Registration Decree)?', a: 'Governs land registration. Outlines judicial vs. administrative proceedings. Certificate of title indefeasible after one year. Land Registration Authority administers.'},
+                {q: 'Define RA 386 (Civil Code effective date).', a: 'Took effect August 30, 1950. Repealed Spanish Civil Code. Governs persons, property, obligations, contracts, succession. Supplemented by special laws.'},
+                {q: 'What is BP 22 (Bouncing Checks Law)?', a: 'Penalizes issuance of checks without sufficient funds. Prima facie evidence of knowledge if dishonored and not paid within 5 days of notice. Imprisonment/fine.'},
+                {q: 'Define RA 8799 (Securities Regulation Code).', a: 'Regulates securities, protects investors. SEC enforces. Penalizes insider trading, price manipulation, securities fraud. Registration of securities required.'},
+                {q: 'What is RA 8504 (AIDS Prevention)?', a: 'Philippine AIDS Prevention and Control Act. Prohibits mandatory HIV testing except blood donation. Confidentiality of status. Anti-discrimination provisions.'},
+                {q: 'Define RA 7875 (PhilHealth Law).', a: 'Creates National Health Insurance Program. Universal health coverage. Mandatory membership for employed, subsidized for indigents. Government pays premium for indigents.'},
+                {q: 'What is RA 10354 (RH Law)?', a: 'Responsible Parenthood. Provides access to contraceptives, maternal care, sex education. Controversial conscience clause for health providers. Declared partially constitutional.'},
+                {q: 'Define RA 7394 (Consumer Act).', a: 'Protects consumer against deceptive, unfair, unconscionable practices. Right to information, choice, representation. DTI enforces. Penalties for violations.'},
+                {q: 'What is RA 9847 (Anti-Torture Law)?', a: 'Defines torture as severe pain/suffering for information, punishment, intimidation. Committed by public officer or private person with acquiescence. No statute of limitations.'},
+                {q: 'Define RA 10175 cyber libel.', a: 'Libel committed through computer system. One degree higher penalty than ordinary libel. Prescription 15 years (later declared 12 years). Defendant need not post bail.'},
+                {q: 'What is RA 10364 (Expanded Anti-Trafficking)?', a: 'Expanded coverage to include attempted trafficking, internet trafficking. Enhanced penalties. Better victim protection. Presumption against bail for trafficking offenses.'},
+                {q: 'Define RA 11058 (Occupational Safety)?', a: 'Strengthens occupational safety and health standards. DOLE enforces. Employers must provide safe workplace. Penalties for non-compliance including closure orders.'}
+            ],
+            'Jurisprudence': [
+                {q: 'What is Marbury v. Madison doctrine?', a: 'Established judicial review. Courts have power to declare laws unconstitutional. Applied in Philippines: Angara v. Electoral Commission (1936) affirmed judicial review power.'},
+                {q: 'Define the David v. Arroyo ruling.', a: 'Calibrated preemptive response unconstitutional. Maximum tolerance policy invalid. Freedom of assembly cannot be regulated by executive fiat, requires congressional act.'},
+                {q: 'What is Estrada v. Sandiganbayan?', a: 'EDSA II uprising constitutional expression of people power. Resignation of president constructively accepted. Arroyo\'s oath as president valid. Plunder case may proceed.'},
+                {q: 'Define Lambino v. COMELEC.', a: 'Initiative to change 1987 Constitution invalid. People\'s Initiative to Propose Amendments (RA 6735) inadequate to implement constitutional provision. Cannot revise entire constitution.'},
+                {q: 'What is Serrano v. Gallant Maritime?', a: 'Struck down contract ceiling on POEA employment contracts. Dollar-peso disparity violates equal protection. Constitutional rights not waivable by contract.'},
+                {q: 'Define Bayan v. Ermita.', a: 'Calibrated preemptive response policy unconstitutional. Rally permits constitutional but no-permit-no-rally policy invalid. Maximum tolerance policy required in dispersals.'},
+                {q: 'What is Ang Ladlad v. COMELEC?', a: 'COMELEC cannot deny party-list accreditation based on moral disapproval of LGBT. Equal protection, religious neutrality. Moral disapproval not compelling state interest.'},
+                {q: 'Define Echegaray v. Secretary of Justice.', a: 'Death penalty constitutional under 1987 Constitution. Congress may impose for compelling reasons. Later: RA 9346 abolished death penalty, commuted all to life imprisonment.'},
+                {q: 'What is Francisco v. House of Representatives?', a: 'Impeachment is political, but subject to judicial review for grave abuse of discretion. One-year bar on impeachment applies to same person, not different charges.'},
+                {q: 'Define Belgica v. Ochoa (PDAF case).', a: 'PDAF system unconstitutional. Violates separation of powers, non-delegability of legislative power, checks and balances. Post-enactment realignment unconstitutional.'},
+                {q: 'What is PIATCO v. DOTC?', a: 'Government contracts must comply with public bidding. NAIA 3 contract void for violating constitutional provisions on monopolies, public bidding. Estoppel not apply to government.'},
+                {q: 'Define Imbong v. Ochoa (RH Law case).', a: 'RH Law substantially constitutional. Some provisions unconstitutional: mandatory sex education without parental consent, conscience clause limitations. Contraceptives not abortifacients.'},
+                {q: 'What is Lagman v. Medialdea (Martial Law)?', a: 'Presidential proclamation of martial law subject to judicial review. Sufficient factual basis exists for Mindanao martial law. Not grave abuse of discretion.'},
+                {q: 'Define Poe-Llamanzares v. COMELEC.', a: 'Foundling is natural-born Filipino citizen. Blood relation to Filipino parent presumed in absence of proof otherwise. Grace Poe qualified to run for president.'},
+                {q: 'What is Disini v. Secretary of Justice?', a: 'Cybercrime Law substantially constitutional. Cyber libel valid but limited to original author. Aiding/abetting libel provision unconstitutional. Real-time traffic data collection unconstitutional.'},
+                {q: 'Define Carpio-Morales v. CA (Impeachment).', a: 'Impeachment complaint may be filed by anyone. House determination of sufficiency in form is limited, not plenary. One-year bar prevents harassment of impeachable officers.'},
+                {q: 'What is Sabio v. Gordon?', a: 'Senator as Red Cross chairman violates prohibition on appointment/designation to other office. Red Cross quasi-public corporation, position not ex-officio. Resign from one.'},
+                {q: 'Define Kilosbayan v. Guingona.', a: 'Taxpayer/citizen standing for public interest issues. Constitutional violations may be raised by any citizen. Liberality in locus standi for transcendental importance.'},
+                {q: 'What is People v. Sandiganbayan (Marcos case)?', a: 'Ill-gotten wealth cases may proceed. Executive issuances creating PCGG valid exercise of police power. Sequestration valid pending determination of legality of acquisition.'},
+                {q: 'Define Tañada v. Angara (WTO case).', a: 'WTO agreement constitutional. Entering into treaty is executive prerogative. Senate concurrence sufficient. Not undue delegation of legislative power to international body.'},
+                {q: 'What is Biraogo v. Truth Commission?', a: 'Truth Commission (EO 1) unconstitutional. Violates equal protection by limiting inquiry to previous administration. Created ad hoc body with quasi-judicial functions.'},
+                {q: 'Define Estrada v. Escritor.', a: 'Judiciary employees held to higher standard. Immorality may be ground for dismissal. Court employees must avoid appearance of impropriety. Religious freedom not absolute defense.'},
+                {q: 'What is Social Justice Society v. Atienza?', a: 'Writ of Kalikasan issued for Manila Bay cleanup. Environmental right enforceable. Government duty to protect environment. Continuing mandamus appropriate remedy.'},
+                {q: 'Define Bayan v. Executive Secretary.', a: 'VFA substantially constitutional. Visiting Forces Agreement proper exercise of executive power. Not violative of sovereignty. Custody provisions defer to primary jurisdiction of Philippines.'},
+                {q: 'What is Province of North Cotabato v. GRP?', a: 'MOA-AD unconstitutional. Violates constitutional provisions on territorial integrity, local government. Consultation requirement not complied with. Violates equal protection.'},
+                {q: 'Define Secretary of Justice v. Lantion.', a: 'Preliminary investigation not terminated by filing of information. May continue despite information filed. Gives prosecutor full discretion. Protects rights of accused.'},
+                {q: 'What is Resident Marine Mammals v. Reyes?', a: 'Marine mammals have legal standing through representatives (humans). Writ of Kalikasan proper remedy. Environmental protection includes marine life.'},
+                {q: 'Define Defensor-Santiago v. Guingona.', a: 'Provisions allowing pocket veto invalid. President must act within 30 days. Inaction results in automatic approval (lapse into law). Congress cannot extend presidential period.'},
+                {q: 'What is Fortun v. Quinsayas (Hazing case)?', a: 'School officials may be liable for hazing deaths under RA 8049. Duty to adopt measures preventing hazing. Failure to enforce anti-hazing policies may constitute negligence.'},
+                {q: 'Define Villanueva v. Judicial and Bar Council.', a: 'JBC recommendations binding on President. President must appoint from list. Cannot choose outside nominees. Ensures merit-based selection of judges.'}
+            ]
+        };
+        
+        let currentSubject = 'Civil Law';
+        let currentCardIndex = 0;
+        let studiedCards = new Set();
+        let currentDeck = [...flashcards[currentSubject]];
+        
+        function initSubjects() {
+            const selector = document.getElementById('subjectSelector');
+            Object.keys(flashcards).forEach(subject => {
+                const btn = document.createElement('button');
+                btn.className = 'subject-btn' + (subject === currentSubject ? ' active' : '');
+                btn.textContent = subject;
+                btn.onclick = () => changeSubject(subject);
+                selector.appendChild(btn);
+            });
+        }
+        
+        function changeSubject(subject) {
+            currentSubject = subject;
+            currentCardIndex = 0;
+            currentDeck = [...flashcards[subject]];
+            studiedCards.clear();
+            
+            document.querySelectorAll('.subject-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent === subject);
+            });
+            
+            updateCard();
+            updateStats();
+        }
+        
+        function updateCard() {
+            const card = currentDeck[currentCardIndex];
+            document.getElementById('question').textContent = card.q;
+            document.getElementById('answer').textContent = card.a;
+            document.getElementById('progressText').textContent = `Card ${currentCardIndex + 1} of ${currentDeck.length}`;
+            document.getElementById('progressFill').style.width = ((currentCardIndex + 1) / currentDeck.length * 100) + '%';
+            
+            const flashcard = document.getElementById('flashcard');
+            flashcard.classList.remove('flipped');
+            
+            studiedCards.add(currentCardIndex);
+            updateStats();
+        }
+        
+        function updateStats() {
+            document.getElementById('totalCards').textContent = currentDeck.length;
+            document.getElementById('currentSubject').textContent = currentSubject.split(' ')[0];
+            document.getElementById('cardsStudied').textContent = studiedCards.size;
+        }
+        
+        function nextCard() {
+            currentCardIndex = (currentCardIndex + 1) % currentDeck.length;
+            updateCard();
+        }
+        
+        function previousCard() {
+            currentCardIndex = (currentCardIndex - 1 + currentDeck.length) % currentDeck.length;
+            updateCard();
+        }
+        
+        function shuffleCards() {
+            for (let i = currentDeck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentDeck[i], currentDeck[j]] = [currentDeck[j], currentDeck[i]];
+            }
+            currentCardIndex = 0;
+            studiedCards.clear();
+            updateCard();
+        }
+        
+        document.getElementById('flashcard').addEventListener('click', function() {
+            this.classList.toggle('flipped');
+        });
+        
+        // Touch swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.getElementById('flashcard').addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        document.getElementById('flashcard').addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) nextCard();
+            if (touchEndX > touchStartX + 50) previousCard();
+        }
+        
+        // Keyboard support
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight') nextCard();
+            if (e.key === 'ArrowLeft') previousCard();
+            if (e.key === ' ') document.getElementById('flashcard').classList.toggle('flipped');
+        });
+        
+        initSubjects();
+        updateCard();
+        updateStats();
+    </script>
+</body>
+</html>
